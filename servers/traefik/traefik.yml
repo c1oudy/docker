@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  traefik:
+    image: traefik:v1.5.0-rc5
+    command: --web --docker --docker.swarmmode --docker.domain=traefik --docker.watch --logLevel=DEBUG --configFile=/var/traefik/traefik.toml
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+    networks:
+      - public
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.toml:/var/traefik/traefik.toml
+      - ./acme:/etc/traefik/acme
+      - ./ca:/etc/traefik/ca
+    container_name: traefik
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]                                                      
+      restart_policy:
+        condition: on-failure
+    labels:
+      - "traefik.enable=false"
+
+networks:
+  public:
+    driver: overlay
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.1.0.0/24

@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  biuexpressweb:
+    image: registry.gitlab.com/8jiong/biu-express-web:latest
+    ports:
+      - "8080"
+    networks:
+      - traefik_public
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 5s
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.backend=biuexpressweb"
+        - "traefik.port=8080"
+        - "traefik.docker.network=traefik_public"
+        - "traefik.frontend.rule=Host:biuexpressweb.outletego.com"
+
+networks:
+  traefik_public:
+    external: true

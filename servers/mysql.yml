@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+   db:
+     image: mysql:5.7
+     ports:
+       - 3306:3306
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: admin
+       MYSQL_DATABASE: we7
+       MYSQL_USER: we7
+       MYSQL_PASSWORD: admin
+
+volumes:
+    db_data:

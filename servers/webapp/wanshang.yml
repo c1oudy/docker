@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  wanshang:
+    image: registry.gitlab.com/quanliren/wanshangpu:[type]-[area]
+    ports:
+      - "80"
+    networks:
+      - traefik_public
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 5s
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.backend=wanshang"
+        - "traefik.port=80"
+        - "traefik.docker.network=traefik_public"
+        - "traefik.frontend.rule=Host:[domain]"
+networks:
+  traefik_public:
+    external: true
